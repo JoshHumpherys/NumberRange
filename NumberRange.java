@@ -153,7 +153,6 @@ public class NumberRange {
                 end = range.getStart();
             }
         }
-        Range() {}
 
         // Returns whether this Range begins after the parameter Range
         boolean beginsBefore(Range range) {
