@@ -29,12 +29,58 @@ public class NumberRange {
             System.err.println("Please make sure the file exists and can be read.");
             return;
         }
+        
+        System.out.println(list);
     }
+    
+    private RangeNode head = null;
 
     public void add(Range range) {
-         System.out.println(range);
+        if(range == null) return;
+        if(head == null) {
+            head = new RangeNode(range, null, null);
+            return;
+        }
+        RangeNode last = findLast(range);
+        if(last == null) {
+            head = new RangeNode(range, null, head);
+            head.getNext().setLast(head);
+            return;
+        }
+        RangeNode newNode = new RangeNode(range, last, last.getNext());
+        last.setNext(newNode);
+        if(newNode.getNext() != null) {
+            newNode.getNext().setLast(newNode);
+        }
+    }
+    
+    // Finds the RangeNode immediately before where the parameter Range should be placed
+    private RangeNode findLast(Range range) {
+        if(head == null) return null;
+        RangeNode last = head;
+        while(true) {
+            if(range.beginsBefore(last)) {
+                return last.getLast();
+            }
+            if(last.getNext() == null) {
+                return last;
+            }
+            last = last.getNext();
+        }
+    }
+    
+    @Override
+    public String toString() {
+        if(head == null) return "[]";
+        String s = "[" + head;
+        RangeNode next = head;
+        while((next = next.getNext()) != null) {
+            s += ", " + next;
+        }
+        return s + "]";
     }
 
+    // Parses a String to return a Range
     private static Range getRange(final String input) {
         if(input.indexOf("//") == 0) return null;
         String line = input.trim();
@@ -52,8 +98,37 @@ public class NumberRange {
             return null;
         }
     }
+    
+    private static final class RangeNode extends Range {
+        private RangeNode last = null;
+        private RangeNode next = null;
+        RangeNode(long start, long end, RangeNode last, RangeNode next) {
+            super(start, end);
+            this.last = last;
+            this.next = next;
+        }
+        RangeNode(Range range, RangeNode last, RangeNode next) {
+            super(range);
+            this.last = last;
+            this.next = next;
+        }
+        
+        void setLast(RangeNode last) {
+            this.last = last;
+        }
+        void setNext(RangeNode next) {
+            this.next = next;
+        }
+        
+        RangeNode getLast() {
+            return last;
+        }
+        RangeNode getNext() {
+            return next;
+        }
+    }
 
-    private static class Range {
+    protected static class Range {
         protected long start, end;
         Range(long start, long end) {
             this.start = start;
@@ -61,6 +136,23 @@ public class NumberRange {
         }
         Range(long startAndEnd) {
             start = end = startAndEnd;
+        }
+        Range(Range range) {
+            start = range.getStart();
+            end = range.getEnd();
+        }
+        Range() {}
+
+        // Returns whether this Range begins after the parameter Range
+        boolean beginsBefore(Range range) {
+            return start < range.getStart();
+        }
+        
+        protected long getStart() {
+            return start;
+        }
+        protected long getEnd() {
+            return end;
         }
 
         @Override
