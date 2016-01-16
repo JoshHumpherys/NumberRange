@@ -23,6 +23,7 @@ public class NumberRange {
             while((line = br.readLine()) != null) {
                 list.add(getRange(line));
             }
+            br.close();
         }
         catch(IOException e) {
             System.err.println("Error: Unable to find or read file.");
