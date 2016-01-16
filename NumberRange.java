@@ -131,15 +131,27 @@ public class NumberRange {
     protected static class Range {
         protected long start, end;
         Range(long start, long end) {
-            this.start = start;
-            this.end = end;
+            if(start < end) {
+                this.start = start;
+                this.end = end;
+            }
+            else {
+                this.start = end;
+                this.end = start;
+            }
         }
         Range(long startAndEnd) {
             start = end = startAndEnd;
         }
         Range(Range range) {
-            start = range.getStart();
-            end = range.getEnd();
+            if(range.getStart() < range.getEnd()) {
+                start = range.getStart();
+                end = range.getEnd();
+            }
+            else {
+                start = range.getEnd();
+                end = range.getStart();
+            }
         }
         Range() {}
 
