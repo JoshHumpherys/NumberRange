@@ -30,6 +30,7 @@ public class NumberRange {
             return;
         }
         
+        list.mergeAll();
         System.out.println(list);
     }
     
@@ -51,6 +52,20 @@ public class NumberRange {
         last.setNext(newNode);
         if(newNode.getNext() != null) {
             newNode.getNext().setLast(newNode);
+        }
+    }
+    
+    // Merges all ranges that overlap
+    public void mergeAll() {
+        if(head == null) return;
+        RangeNode start = head;
+        RangeNode end = start;
+        while(end != null) {            
+            while(end.isMergeableWith(end.getNext())) {
+                end = end.getNext();
+            }
+            start.mergeWith(end);
+            start = end = start.getNext();
         }
     }
     
@@ -113,6 +128,12 @@ public class NumberRange {
             this.next = next;
         }
         
+        void mergeWith(RangeNode endNode) {
+            if(endNode == this) return;
+            next = endNode.getNext();
+            end = Math.max(end, endNode.getEnd());
+        }
+        
         void setLast(RangeNode last) {
             this.last = last;
         }
@@ -157,6 +178,12 @@ public class NumberRange {
         // Returns whether this Range begins after the parameter Range
         boolean beginsBefore(Range range) {
             return start < range.getStart();
+        }
+        
+        // Returns if this overlaps or is adjacent to parameter
+        boolean isMergeableWith(Range range) {
+            if(range == null) return false;
+            return end >= range.getStart() - 1;
         }
         
         protected long getStart() {
