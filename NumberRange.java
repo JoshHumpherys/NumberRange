@@ -37,6 +37,7 @@ public class NumberRange {
     
     private RangeNode head = null;
 
+    // Adds a node with the given range to the list
     public void add(Range range) {
         if(range == null) return;
         if(head == null) {
@@ -129,12 +130,14 @@ public class NumberRange {
             this.next = next;
         }
         
+        // Merges this with parameter
         void mergeWith(RangeNode endNode) {
             if(endNode == this) return;
             next = endNode.getNext();
             end = Math.max(end, endNode.getEnd());
         }
         
+        // Set methods
         void setLast(RangeNode last) {
             this.last = last;
         }
@@ -142,6 +145,7 @@ public class NumberRange {
             this.next = next;
         }
         
+        // Get methods
         RangeNode getLast() {
             return last;
         }
@@ -187,6 +191,7 @@ public class NumberRange {
             return end >= range.getStart() - 1;
         }
         
+        // Get methods
         protected long getStart() {
             return start;
         }
